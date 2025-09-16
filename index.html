@@ -381,7 +381,7 @@
  
     <script>
         // Configuration Google Sheets
-        const GOOGLE_SCRIPT_URL ='https://script.google.com/macros/s/AKfycby3D0vIf6WRJIkDjCTt52ClIge3z2wdSlLn3CGSYkfiDB-Jl7xAoSIBQLYEfzQbnxeZ/exec';
+        const GOOGLE_SCRIPT_URL ='https://script.google.com/macros/s/AKfycbxTEc8YEizumn7Sbfz3bciCHsDrwJmY6pm-_Q0yz_Cf7WF_jcIMMnLISSBn4OULfsJ7/exec';
         
         // Gestion du formulaire
         document.getElementById('inscriptionForm').addEventListener('submit', function(e) {
@@ -420,39 +420,32 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                console.log('Réponse du serveur:', response);
-                
-                // Afficher le message de succès
-                const successMsg = document.getElementById('successMessage');
-                successMsg.classList.remove('translate-x-full');
-                
-                // Réinitialiser le formulaire
-                document.getElementById('inscriptionForm').reset();
-                
-                // Cacher le message après 4 secondes
-                setTimeout(() => {
-                    successMsg.classList.add('translate-x-full');
-                }, 4000);
-                
-                console.log('Inscription envoyée avec succès !');
+            .then(response => response.json()) // On attend une réponse JSON du script
+            .then(data => {
+                console.log('Réponse du serveur:', data);
+                if (data.success) {
+                    // Afficher le message de succès
+                    const successMsg = document.getElementById('successMessage');
+                    successMsg.classList.remove('translate-x-full');
+                    
+                    // Réinitialiser le formulaire
+                    document.getElementById('inscriptionForm').reset();
+                    
+                    // Cacher le message après 4 secondes
+                    setTimeout(() => {
+                        successMsg.classList.add('translate-x-full');
+                    }, 4000);
+                    
+                    console.log('Inscription envoyée avec succès !');
+                } else {
+                    // Gérer les erreurs renvoyées par le script
+                    alert('Erreur du serveur: ' + data.error);
+                }
             })
             .catch(error => {
+                // Cette partie gère les erreurs réseau (comme le CORS)
                 console.error('Erreur lors de l\'envoi:', error);
-                
-                // Même en cas d'erreur, on affiche le succès car Google Apps Script 
-                // retourne souvent des erreurs CORS même quand ça fonctionne
-                const successMsg = document.getElementById('successMessage');
-                successMsg.classList.remove('translate-x-full');
-                
-                // Réinitialiser le formulaire
-                document.getElementById('inscriptionForm').reset();
-                
-                setTimeout(() => {
-                    successMsg.classList.add('translate-x-full');
-                }, 4000);
-                
-                console.log('Données probablement envoyées (erreur CORS normale)');
+                alert('Une erreur de communication est survenue. Veuillez vérifier votre connexion et réessayer.');
             })
             .finally(() => {
                 // Réactiver le bouton
