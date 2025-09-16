@@ -284,23 +284,6 @@
         </div>
     </div>
     
-    <!-- Message de succès -->
-    <div id="successMessage" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
-        <div class="flex items-center gap-2">
-            <span class="text-xl">✓</span>
-            <span class="font-semibold">Inscription réussie !</span>
-        </div>
-    </div>
-
-    <!-- Message d'erreur -->
-    <div id="errorMessage" class="fixed top-20 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
-        <div class="flex items-center gap-3">
-            <span class="text-xl">✗</span>
-            <span class="font-semibold">Erreur de communication. Réessayez.</span>
-        </div>
-    </div>
-
-
     <!-- Modal d'information -->
     <div id="infoModal" class="fixed inset-0 bg-gradient-to-br from-yellow-900/20 via-amber-800/30 to-yellow-600/20 backdrop-blur-md z-[100] hidden">
         <div class="min-h-screen flex items-center justify-center p-4">
@@ -411,7 +394,6 @@
             
             // Désactiver le bouton pendant l'envoi
             const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'Envoi en cours...';
             
@@ -432,18 +414,6 @@
             .then(response => response.json()) // On attend une réponse JSON du script
             .then(data => {
                 if (data.success) {
-                    // Afficher le message de succès
-                    const successMsg = document.getElementById('successMessage');
-                    successMsg.classList.remove('translate-x-full');
-
-                    // Réinitialiser le formulaire
-                    document.getElementById('inscriptionForm').reset();
-
-                    // Cacher le message après 4 secondes
-                    setTimeout(() => {
-                        successMsg.classList.add('translate-x-full');
-                    }, 4000);
-
                     console.log('merci projet abm');
                 } else {
                     // Gérer les erreurs renvoyées par le script
@@ -453,20 +423,15 @@
             .catch(error => {
                 // Cette partie gère les erreurs réseau (comme le CORS)
                 console.error('Erreur lors de l\'envoi:', error);
-                
-                // Afficher le message d'erreur au lieu d'une alerte
-                const errorMsg = document.getElementById('errorMessage');
-                errorMsg.classList.remove('translate-x-full');
-                
-                // Cacher le message après 4 secondes
-                setTimeout(() => {
-                    errorMsg.classList.add('translate-x-full');
-                }, 4000);
             })
             .finally(() => {
-                // Réactiver le bouton
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
+                // Réinitialiser le formulaire
+                document.getElementById('inscriptionForm').reset();
+                // Changer le bouton en "Merci" et le désactiver
+                submitBtn.textContent = 'Merci !';
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('luxury-gradient', 'hover:scale-105');
+                submitBtn.classList.add('bg-green-500', 'cursor-not-allowed');
             });
         });
         
